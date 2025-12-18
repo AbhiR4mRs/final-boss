@@ -1,0 +1,211 @@
+sentence,intent
+open chrome,system_command
+open google chrome,system_command
+launch chrome browser,system_command
+start chrome,system_command
+can you open chrome,system_command
+please open chrome,system_command
+open the chrome browser,system_command
+start google chrome for me,system_command
+close chrome,system_command
+quit chrome,system_command
+close the chrome browser,system_command
+exit chrome,system_command
+open vscode,system_command
+open visual studio code,system_command
+launch vscode,system_command
+start visual studio code,system_command
+close vscode,system_command
+quit vscode,system_command
+exit visual studio code,system_command
+open file explorer,system_command
+open explorer,system_command
+launch file explorer,system_command
+open settings,system_command
+open system settings,system_command
+open control panel,system_command
+open spotify,system_command
+launch spotify,system_command
+start spotify app,system_command
+close spotify,system_command
+quit spotify,system_command
+exit spotify,system_command
+play music,system_command
+play a song,system_command
+play song on spotify,system_command
+play my favorite song,system_command
+pause music,system_command
+pause the song,system_command
+resume music,system_command
+resume the song,system_command
+stop music,system_command
+stop the song,system_command
+increase volume,system_command
+decrease volume,system_command
+mute volume,system_command
+unmute volume,system_command
+take a screenshot,system_command
+capture screen,system_command
+lock the system,system_command
+lock my computer,system_command
+shutdown system,system_command
+restart system,system_command
+open calculator,system_command
+launch calculator,system_command
+close calculator,system_command
+open notepad,system_command
+start task manager,system_command
+show my desktop,system_command
+minimize all windows,system_command
+turn up brightness,system_command
+lower the brightness,system_command
+enable dark mode,system_command
+turn off bluetooth,system_command
+connect to wifi,system_command
+check system updates,system_command
+open terminal,system_command
+launch command prompt,system_command
+remember my project deadline is march,memory_store
+remember my exam is next week,memory_store
+remember I like dark mode,memory_store
+remember my favorite song,memory_store
+remember my meeting tomorrow,memory_store
+save my meeting for tomorrow,memory_store
+remember my work schedule,memory_store
+remember I wake up at six,memory_store
+remember my submission date,memory_store
+remember my capstone deadline,memory_store
+save this task,memory_store
+add this task to my list,memory_store
+add this to my tasks,memory_store
+save this reminder,memory_store
+store this information,memory_store
+keep this in mind,memory_store
+note this down,memory_store
+remember this detail,memory_store
+remember my presentation date,memory_store
+remember my interview time,memory_store
+save my notes,memory_store
+store my preference,memory_store
+remember I prefer python,memory_store
+remember I use vscode,memory_store
+remember my daily routine,memory_store
+remember my lunch time,memory_store
+save my important note,memory_store
+keep my task in memory,memory_store
+remember this important thing,memory_store
+remember my project topic,memory_store
+save my anniversary date as June 5th,memory_store
+remind me that I am allergic to peanuts,memory_store
+keep a note that my car is in the garage,memory_store
+store the gate code 5562,memory_store
+remember that I have a flight at 9pm,memory_store
+save the fact that my boss is named Michael,memory_store
+remember my doctor appointment on Friday,memory_store
+keep track of my gym goals,memory_store
+note that I need to buy milk,memory_store
+remember my sister's birthday is tomorrow,memory_store
+save my login credentials,memory_store
+remember I prefer decaf coffee,memory_store
+store the client's phone number,memory_store
+keep this address in your memory,memory_store
+remember I am learning Javascript,memory_store
+what is my project deadline,memory_recall
+what is my exam date,memory_recall
+what do I like,memory_recall
+what is my favorite song,memory_recall
+what did I tell you earlier,memory_recall
+what do you remember about me,memory_recall
+show my tasks,memory_recall
+show my reminders,memory_recall
+do I have any tasks,memory_recall
+do I have any reminders,memory_recall
+tell me my preferences,memory_recall
+recall my saved notes,memory_recall
+show saved tasks,memory_recall
+show my task list,memory_recall
+what is my schedule,memory_recall
+what is my routine,memory_recall
+what is my submission date,memory_recall
+what are my important notes,memory_recall
+what meetings do I have,memory_recall
+tell me my saved information,memory_recall
+when is my anniversary,memory_recall
+what am I allergic to,memory_recall
+where is my car,memory_recall
+what is the gate code,memory_recall
+when is my flight,memory_recall
+what is my boss's name,memory_recall
+what time is my doctor appointment,memory_recall
+read my gym goals,memory_recall
+what do I need to buy,memory_recall
+is it anyone's birthday tomorrow,memory_recall
+give me my login details,memory_recall
+how do I like my coffee,memory_recall
+what is the client's number,memory_recall
+show me that saved address,memory_recall
+what language am I learning,memory_recall
+hello friday,chat
+hi friday,chat
+hey friday,chat
+how are you,chat
+how are you doing,chat
+what are you doing,chat
+talk to me,chat
+can we talk,chat
+tell me a joke,chat
+say something funny,chat
+good morning friday,chat
+good evening friday,chat
+good night friday,chat
+who are you,chat
+what can you do,chat
+are you there,chat
+are you listening,chat
+how was your day,chat
+what is your name,chat
+introduce yourself,chat
+can you help me,chat
+let us chat,chat
+talk with me,chat
+what do you know,chat
+how do you work,chat
+do you like me,chat
+are you my assistant,chat
+what is today,chat
+tell me something,chat
+chat with me,chat
+tell me a fun fact,chat
+what is the weather like,chat
+who made you,chat
+are you smart,chat
+do you have a brain,chat
+sing a song,chat
+give me a quote,chat
+I am bored,chat
+tell me a riddle,chat
+you are very helpful,chat
+do you sleep,chat
+what is your favorite color,chat
+can you think,chat
+where do you live,chat
+exit,exit
+exit friday,exit
+stop friday,exit
+quit friday,exit
+close assistant,exit
+go to sleep friday,exit
+shutdown friday,exit
+stop listening,exit
+end session,exit
+bye friday,exit
+goodbye friday,exit
+terminate assistant,exit
+turn off,exit
+kill process,exit
+leave me alone,exit
+stop running,exit
+deactivate,exit
+goodnight,exit
+see you later,exit
+shutdown,exit

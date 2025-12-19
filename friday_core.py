@@ -1,98 +1,155 @@
+import threading
+import queue
+import time
 import joblib
+
 from auth.face_auth import FaceAuthenticator
 from memory.friday_memory import FridayMemory
+from memory.working_memory import WorkingMemory
+from brain_logic import FridayBrain
+
+from speech.stt_whisper import SpeechRecognizer
+from voice.friday_voice import FridayVoice
 
 
 # -------------------------------
-# Load ML Intent Model
+# LOAD INTENT MODELS
 # -------------------------------
 intent_model = joblib.load("models/intent_model.pkl")
 vectorizer = joblib.load("models/tfidf_vectorizer.pkl")
 
+EXIT_KEYWORDS = {"exit", "quit", "bye", "shutdown", "stop"}
+
 
 def predict_intent(text):
-    """Predicts intent using trained ML model"""
     X = vectorizer.transform([text])
     return intent_model.predict(X)[0]
 
 
 # -------------------------------
-# Rule-Based Exit Override (Safety)
+# GLOBAL PIPELINE OBJECTS
 # -------------------------------
-EXIT_KEYWORDS = ["exit", "quit", "stop", "bye", "goodbye", "shutdown"]
+audio_queue = queue.Queue()
+response_queue = queue.Queue()
 
-
-def is_exit_command(text):
-    return any(word in text.lower() for word in EXIT_KEYWORDS)
+llm_lock = threading.Lock()
+is_speaking = threading.Event()
 
 
 # -------------------------------
-# FRIDAY MAIN
+# LISTENER THREAD
 # -------------------------------
-def main():
-    print("\n[FRIDAY] Initializing authentication...\n")
-
-    # Authenticate user
-    authenticator = FaceAuthenticator()
-    ACCESS_MODE = authenticator.authenticate()
-
-    print(f"[FRIDAY] Access Mode: {ACCESS_MODE}\n")
-
-    # Initialize memory
-    memory = FridayMemory()
-
-    print("FRIDAY: Hello! Type your command (type 'exit' to quit)\n")
-
+def listener_loop(stt):
     while True:
-        user_input = input("You: ").strip()
-
-        if not user_input:
+        if is_speaking.is_set():
+            time.sleep(0.2)
             continue
 
-        # --- Exit override ---
-        if is_exit_command(user_input):
-            print("FRIDAY: Goodbye. Have a great day.")
+        text = stt.listen(duration=4)
+        if not text:
+            continue
+
+        print(f"\nYou: {text}")
+
+        if text.lower() in EXIT_KEYWORDS:
+            audio_queue.put("EXIT")
             break
 
-        # --- Predict intent ---
+        audio_queue.put(text)
+
+
+# -------------------------------
+# BRAIN THREAD
+# -------------------------------
+def brain_loop(brain, memory, working_memory, ACCESS_MODE):
+    while True:
+        user_input = audio_queue.get()
+
+        if user_input == "EXIT":
+            response_queue.put("Shutting down. Goodbye.")
+            break
+
+        working_memory.add("User", user_input)
         intent = predict_intent(user_input)
 
+        context_memories = ""
+        if intent == "memory_recall":
+            context_memories = memory.recall_memory(access_mode=ACCESS_MODE)
+
+        if intent == "memory_store":
+            result = memory.store_memory(user_input, access_mode=ACCESS_MODE)
+            response_queue.put(result)
+            continue
+
         # -------------------------------
-        # Route by intent
+        # LLM (SERIALIZED)
         # -------------------------------
-
-        # CHAT (always allowed)
-        if intent == "chat":
-            print("FRIDAY: I'm here with you. How can I help?")
-
-        # MEMORY STORE (OWNER only)
-        elif intent == "memory_store":
-            response = memory.store_memory(
-                user_input,
-                access_mode=ACCESS_MODE
+        with llm_lock:
+            response = brain.generate_response(
+                user_input=user_input,
+                intent=intent,
+                access_mode=ACCESS_MODE,
+                memories=context_memories,
+                working_context=working_memory.context()
             )
-            print(f"FRIDAY: {response}")
 
-        # MEMORY RECALL (OWNER only)
-        elif intent == "memory_recall":
-            response = memory.recall_memory(
-                access_mode=ACCESS_MODE
-            )
-            print(f"FRIDAY: {response}")
-
-        # SYSTEM COMMAND (BLOCKED FOR NOW)
-        elif intent == "system_command":
-            if ACCESS_MODE != "OWNER":
-                print("FRIDAY: System access is restricted to my owner.")
-            else:
-                print("FRIDAY: System command recognized (execution disabled in demo).")
-
-        else:
-            print("FRIDAY: I'm not sure how to handle that.")
+        working_memory.add("FRIDAY", response)
+        response_queue.put(response)
 
 
 # -------------------------------
-# Entry Point
+# SPEAKER THREAD
 # -------------------------------
+def speaker_loop(voice):
+    while True:
+        response = response_queue.get()
+        is_speaking.set()
+        voice.speak(response)
+        is_speaking.clear()
+
+        if "shutting down" in response.lower():
+            break
+
+
+# -------------------------------
+# MAIN
+# -------------------------------
+def main():
+    authenticator = FaceAuthenticator()
+    memory = FridayMemory()
+    working_memory = WorkingMemory(max_turns=6)
+
+    brain = FridayBrain(owner_name="Abhiram")
+    stt = SpeechRecognizer(model_size="tiny")
+    voice = FridayVoice()
+
+    print("[FRIDAY] Authenticating...")
+    ACCESS_MODE = authenticator.authenticate()
+    print(f"[FRIDAY] Access Mode: {ACCESS_MODE}")
+
+    voice.speak("FRIDAY online.")
+
+    threading.Thread(
+        target=listener_loop,
+        args=(stt,),
+        daemon=True
+    ).start()
+
+    threading.Thread(
+        target=brain_loop,
+        args=(brain, memory, working_memory, ACCESS_MODE),
+        daemon=True
+    ).start()
+
+    threading.Thread(
+        target=speaker_loop,
+        args=(voice,),
+        daemon=True
+    ).start()
+
+    while True:
+        time.sleep(1)
+
+
 if __name__ == "__main__":
     main()
